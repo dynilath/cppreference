@@ -1,6 +1,8 @@
 // @ts-check
 import { defineConfig } from 'astro/config';
 import starlight from '@astrojs/starlight';
+import mdx from '@astrojs/mdx';
+import { fileURLToPath } from "node:url"
 
 // https://astro.build/config
 export default defineConfig({
@@ -13,10 +15,22 @@ export default defineConfig({
 			social: [{ icon: 'github', label: 'GitHub', href: 'https://github.com/cppreference-md/cppreference' }],
 			sidebar: [
 				{
-					label: 'Reference',
-					autogenerate: { directory: 'reference' },
+					label: 'C++',
+					autogenerate: { directory: 'cpp' },
+				}, {
+					label: 'C',
+					autogenerate: { directory: 'c' },
 				},
-			],
+			]
 		}),
+		mdx({
+
+		})
 	],
+	markdown: {
+		shikiConfig: {
+			theme: 'github-light',
+			wrap: true
+		}
+	}
 });
