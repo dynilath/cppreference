@@ -1,6 +1,78 @@
 ---
-title: Example Reference
-description: A reference page
+title: Examples
 ---
 
-TestTestTest
+#### Examples of astro components of this project 
+
+import DeclarationTable from '@components/mdx/DeclarationTable.astro';
+import Since from '@components/mdx/Since.astro';
+import ComponentPreview from '@components/mdx/ComponentPreview.astro';
+
+## ComponentPreview
+
+<ComponentPreview code={`
+<ComponentPreview code={\`
+  <div>This will be rendered in the preview area</div>
+\`}>
+  <div>This will be rendered in the preview area</div>
+</ComponentPreview>
+`}>
+
+<ComponentPreview code={`
+  <div>This will be rendered in the preview area</div>
+`}>
+  <div>This will be rendered in the preview area</div>
+</ComponentPreview>
+
+</ComponentPreview>
+
+## Since
+
+<ComponentPreview code={`
+<Since v26>
+ For std::filesystem::path, see path format specification.
+</Since>
+`}>
+<Since v26>
+For std::filesystem::path, see path format specification.
+</Since>
+</ComponentPreview>
+
+<ComponentPreview code={`
+<Since v26 until>
+ For std::filesystem::path, see path format specification.
+</Since>
+`}>
+<Since v26 until>
+For std::filesystem::path, see path format specification.
+</Since>
+</ComponentPreview>
+
+<ComponentPreview code={`
+#### test <Since v26 until inline>this is a inline since</Since>
+`}>
+
+
+#### test <Since v26 until inline>this is a inline since</Since>
+
+</ComponentPreview>
+
+
+## DeclarationTable
+
+<DeclarationTable header="print" content={`
+(1)
+template< class... Args >
+void println( std::format_string<Args...> fmt, Args&&... args );
+
+(2) (since C++23)
+template< class... Args >
+void println( std::FILE* stream,
+              std::format_string<Args...> fmt, Args&&... args );
+
+(3) (since C++26)
+void println();
+
+(4) (since C++26)
+void println( std::FILE* stream );
+`} />

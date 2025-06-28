@@ -4,6 +4,11 @@ title: std::println
 description: Format args according to the format string fmt with appended '\n' (which means that each output ends with a new-line), and print the result to a stream.
 ---
 import DeclarationTable from '@components/mdx/DeclarationTable.astro';
+import Since from '@components/mdx/Since.astro';
+
+<Since v26>
+ For std::filesystem::path, see path format specification.
+</Since>
 
 <DeclarationTable header="print" content={`
 (1)
@@ -21,18 +26,6 @@ void println();
 (4) (since C++26)
 void println( std::FILE* stream );
 `} />
-
-| Defined in header \<print\> |  |  |
-| --- | --- | --- |
-|template\< class... Args \>
-void println( std::format_string\<Args...\> fmt, Args&&... args ); | (1) | (since C++23)|
-|template\< class... Args \>
-void println( std::FILE* stream,
-
-              std::format_string\<Args...\> fmt, Args&&... args ); | (2) | (since C++23)|
-|void println(); | (3) | (since C++26)|
-|void println( std::FILE* stream ); | (4) | (since C++26)|
-| |  | |
 
 Format args according to the format string fmt with appended '\n' (which means that each output ends with a new-line), and print the result to a stream.
 
@@ -107,7 +100,7 @@ The arg-id ﻿s in a format string must all be present or all be omitted. Mixi
 
 (since C++23)
 
- For std::filesystem::path, see path format specification.
+
 
 (since C++26)
 

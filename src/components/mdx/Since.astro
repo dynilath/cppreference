@@ -1,0 +1,122 @@
+---
+export interface Props {
+    v11?: boolean;
+    v14?: boolean;
+    v17?: boolean;
+    v20?: boolean;
+    v23?: boolean;
+    v26?: boolean;
+    version?: string;
+    until?: boolean;
+    inline?: boolean;
+}
+
+const { until, inline, ...props } = Astro.props;
+let { version } = props;
+
+if (!version) {
+    version = Object.keys(props)
+        .find((key) => key.startsWith("v"))
+        ?.slice(1);
+}
+
+const prefixText = until ? "until" : "since";
+---
+
+<div
+    class={`not-content since-container ${until ? "since-until" : ""} ${inline ? "since-inline" : ""} ${version ? "version-" + version : ""}`}
+    data-version={version}
+>
+    <div>
+        <slot />
+    </div>
+    <div class="since-label">({prefixText} C++{version})</div>
+</div>
+
+<style>
+    .since-container {
+        position: relative;
+        padding: 12px;
+        border: 1px solid #10b981;
+        border-radius: 6px;
+        background-color: #f0fdf475;
+        margin: 16px 0;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+    }
+
+    .since-label {
+        font-size: 14px;
+        font-weight: 500;
+        color: #059669;
+        background-color: #f0fdf4;
+        padding: 2px 6px;
+        border-radius: 4px;
+    }
+
+    .since-until {
+        border-color: #2563eb;
+        background-color: #eff6ff75;
+    }
+
+    .since-until .since-label {
+        color: #2563eb;
+        background-color: #eff6ff;
+    }
+
+    .since-inline {
+        color: var(--text-color);
+        border: 1px solid #10b98180;
+        font-weight: 500;
+        font-size: 14px;
+        border-radius: 6px;
+        background: transparent;
+        margin: 0 2px;
+        padding: 3px;
+        display: inline;
+
+        & > div {
+            display: inline;
+        }
+    }
+
+    .since-inline.since-until {
+        border-color: #2563eb80;
+    }
+
+    .since-inline.since-until .since-label {
+        color: #2563eb;
+        background-color: #eff6ff;
+    }
+
+    .since-container :global(pre) {
+        margin: 0;
+        background: transparent !important;
+        border: none !important;
+    }
+
+    .since-container :global(code) {
+        background: transparent !important;
+    }
+
+    :root[data-theme="dark"] .since-container:not(.since-inline) {
+        border-color: #10b98180;
+        background-color: #042f2e75;
+    }
+
+    :root[data-theme="dark"] .since-label {
+        color: #34d399;
+        background-color: #042f2e;
+    }
+
+    :root[data-theme="dark"] .since-until:not(.since-inline) {
+        border-color: #3b82f6;
+        background-color: #1e293b75;
+    }
+
+    :root[data-theme="dark"] .since-until .since-label {
+        color: #60a5fa;
+        background-color: #1e293b;
+    }
+</style>
