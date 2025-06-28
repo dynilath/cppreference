@@ -27,13 +27,13 @@ function parseDeclarations(content: string) {
   for (const line of lines) {
     const trimmedLine = line.trim();
 
-    const numberMatch = trimmedLine.match(/^\((\d+)\)(?:\s+\((.+?)\))?$/);
+    const numberMatch = trimmedLine.match(/^\((\d+)\)(?:\s+\(since (.+?)\))?$/);
     if (numberMatch) {
       if (currentDeclaration && currentNumber) {
         declarations.push({
           number: currentNumber,
           code: currentDeclaration.trim(),
-          version: currentVersion.replace("since ", ""),
+          version: currentVersion,
         });
       }
 
@@ -57,7 +57,7 @@ function parseDeclarations(content: string) {
     declarations.push({
       number: currentNumber,
       code: currentDeclaration.trim(),
-      version: currentVersion.replace("since ", ""),
+      version: currentVersion,
     });
   }
 
@@ -68,27 +68,27 @@ const declarations = parseDeclarations(content);
 
 const highlightedDeclarations = await Promise.all(
   declarations.map(async (decl) => {
-    const highlighted = await codeToHtml(decl.code, {
-      lang: "cpp",
-      theme: "github-dark",
-      transformers: [
-        {
-          pre(node) {
-            this.addClassToHast(node, "declaration-code");
-          },
-        },
-      ],
-    });
+    const [lightHighlighted, darkHighlighted] = await Promise.all([
+      codeToHtml(decl.code, {
+        lang: "cpp",
+        theme: "github-light",
+      }),
+      codeToHtml(decl.code, {
+        lang: "cpp",
+        theme: "github-dark",
+      }),
+    ]);
 
     return {
       ...decl,
-      highlighted,
+      lightHighlighted,
+      darkHighlighted,
     };
   }),
 );
 ---
 
-<div class="declaration-table">
+<div class="declaration-table not-content">
   <div class="declaration-header">
     Defined in header &lt;<span class="header-name">{header}</span>&gt;
   </div>
@@ -98,7 +98,8 @@ const highlightedDeclarations = await Promise.all(
       highlightedDeclarations.map((decl) => (
         <div class="declaration-row">
           <div class="declaration-content">
-            <div class="declaration-code" set:html={decl.highlighted} />
+            <div class="light-code" set:html={decl.lightHighlighted} />
+            <div class="dark-code" set:html={decl.darkHighlighted} />
           </div>
           <div class="declaration-meta">
             {decl.version && (
@@ -144,6 +145,7 @@ const highlightedDeclarations = await Promise.all(
     border-bottom: 1px solid #e1e5e9;
     padding: 1rem;
     gap: 1rem;
+    align-items: center;
   }
 
   .declaration-row:last-child {
@@ -157,9 +159,10 @@ const highlightedDeclarations = await Promise.all(
 
   .declaration-meta {
     display: flex;
-    align-items: flex-end;
+    align-items: center;
     gap: 0.25rem;
     flex-shrink: 0;
+    margin: 0;
   }
 
   .declaration-number {
@@ -177,18 +180,77 @@ const highlightedDeclarations = await Promise.all(
     white-space: nowrap;
   }
 
-  :global(.declaration-code pre) {
+  .light-code {
+    display: block;
+  }
+
+  .dark-code {
+    display: none;
+  }
+
+  :root[data-theme="dark"] .light-code {
+    display: none;
+  }
+
+  :root[data-theme="dark"] .dark-code {
+    display: block;
+  }
+
+  :global(.declaration-content pre),
+  :global(.declaration-content pre[class*="shiki"]) {
     margin: 0 !important;
     padding: 0 !important;
     background: transparent !important;
+    background-color: transparent !important;
     border: none !important;
-    font-size: 0.9rem;
-    line-height: 1.5;
+    border-radius: 0 !important;
+    box-shadow: none !important;
+    font-size: 0.9rem !important;
+    line-height: 1.5 !important;
+    overflow: visible !important;
   }
 
-  :global(.declaration-code code) {
+  :global(.declaration-content code),
+  :global(.declaration-content code[class*="shiki"]) {
     background: transparent !important;
+    background-color: transparent !important;
     padding: 0 !important;
+    border: none !important;
+    border-radius: 0 !important;
+    box-shadow: none !important;
+    display: block !important;
+  }
+
+  :root[data-theme="dark"] .declaration-table {
+    border-color: #30363d;
+    background: #0d1117;
+  }
+
+  :root[data-theme="dark"] .declaration-header {
+    background: #161b22;
+    border-color: #30363d;
+    color: #8b949e;
+  }
+
+  :root[data-theme="dark"] .header-name {
+    color: #58a6ff;
+  }
+
+  :root[data-theme="dark"] .declarations-container {
+    background: #0d1117;
+  }
+
+  :root[data-theme="dark"] .declaration-row {
+    border-color: #21262d;
+  }
+
+  :root[data-theme="dark"] .declaration-number {
+    color: #8b949e;
+  }
+
+  :root[data-theme="dark"] .declaration-version {
+    color: #238636;
+    background: #1a2e1a;
   }
 
   @media (max-width: 768px) {
@@ -198,47 +260,12 @@ const highlightedDeclarations = await Promise.all(
     }
 
     .declaration-meta {
-      flex-direction: row;
       align-items: center;
       align-self: flex-start;
     }
 
     .declaration-version {
       margin-left: 0.5rem;
-    }
-  }
-
-  @media (prefers-color-scheme: dark) {
-    .declaration-table {
-      border-color: #30363d;
-      background: #0d1117;
-    }
-
-    .declaration-header {
-      background: #161b22;
-      border-color: #30363d;
-      color: #8b949e;
-    }
-
-    .header-name {
-      color: #58a6ff;
-    }
-
-    .declarations-container {
-      background: #0d1117;
-    }
-
-    .declaration-row {
-      border-color: #21262d;
-    }
-
-    .declaration-number {
-      color: #8b949e;
-    }
-
-    .declaration-version {
-      color: #238636;
-      background: #1a2e1a;
     }
   }
 </style>
