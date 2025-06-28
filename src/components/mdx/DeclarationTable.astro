@@ -97,9 +97,11 @@ const highlightedDeclarations = await Promise.all(
     {
       highlightedDeclarations.map((decl) => (
         <div class="declaration-row">
-          <div class="declaration-content">
-            <div class="light-code" set:html={decl.lightHighlighted} />
-            <div class="dark-code" set:html={decl.darkHighlighted} />
+          <div class="declaration-content-wrapper">
+            <div class="declaration-content">
+              <div class="light-code" set:html={decl.lightHighlighted} />
+              <div class="dark-code" set:html={decl.darkHighlighted} />
+            </div>
           </div>
           <div class="declaration-meta">
             {decl.version && (
@@ -152,9 +154,30 @@ const highlightedDeclarations = await Promise.all(
     border-bottom: none;
   }
 
-  .declaration-content {
+  .declaration-content-wrapper {
     flex: 1;
     min-width: 0;
+    position: relative;
+  }
+
+  .declaration-content {
+    overflow-x: auto;
+    overflow-y: hidden;
+    position: relative;
+    scrollbar-width: none;
+    -ms-overflow-style: none;
+    mask: linear-gradient(to right, 
+      black 0%, 
+      black calc(100% - 20px), 
+      transparent 100%);
+    -webkit-mask: linear-gradient(to right, 
+      black 0%, 
+      black calc(100% - 20px), 
+      transparent 100%);
+  }
+
+  .declaration-content::-webkit-scrollbar {
+    display: none;
   }
 
   .declaration-meta {
@@ -266,6 +289,10 @@ const highlightedDeclarations = await Promise.all(
 
     .declaration-version {
       margin-left: 0.5rem;
+    }
+
+    .declaration-content-wrapper {
+      width: 100%;
     }
   }
 </style>
