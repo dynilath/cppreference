@@ -1,25 +1,13 @@
 ---
 export interface Props {
-    v11?: boolean;
-    v14?: boolean;
-    v17?: boolean;
-    v20?: boolean;
-    v23?: boolean;
-    v26?: boolean;
-    version?: string;
-    until?: boolean;
+    since?: string;
+    until?: string;
+    
     inline?: boolean;
 }
 
-const { until, inline, ...props } = Astro.props;
-let { version } = props;
-
-if (!version) {
-    version = Object.keys(props)
-        .find((key) => key.startsWith("v"))
-        ?.slice(1);
-}
-
+const { since, until, inline } = Astro.props;
+const version = since || until;
 const prefixText = until ? "until" : "since";
 ---
 

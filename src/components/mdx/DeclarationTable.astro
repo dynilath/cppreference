@@ -27,7 +27,7 @@ function parseDeclarations(content: string) {
   for (const line of lines) {
     const trimmedLine = line.trim();
 
-    const numberMatch = trimmedLine.match(/^\((\S+)\)(?:\s+\(since (.+?)\))?$/);
+    const numberMatch = trimmedLine.match(/^\((\S+)\)(?:\s+\((.+?)\))?$/);
     if (numberMatch) {
       if (currentDeclaration && currentNumber) {
         declarations.push({
@@ -105,7 +105,7 @@ const highlightedDeclarations = await Promise.all(
           </div>
           <div class="declaration-meta">
             {decl.version && (
-              <span class="declaration-version">(since {decl.version})</span>
+              <span class="declaration-version">({decl.version})</span>
             )}
             <span class="declaration-number">({decl.number})</span>
           </div>

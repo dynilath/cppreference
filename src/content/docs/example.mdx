@@ -2,13 +2,13 @@
 title: Examples
 ---
 
-#### Examples of astro components of this project 
+## astro components of this project 
 
 import DeclarationTable from '@components/mdx/DeclarationTable.astro';
-import Since from '@components/mdx/Since.astro';
+import StdVer from '@components/mdx/StdVer.astro';
 import ComponentPreview from '@components/mdx/ComponentPreview.astro';
 
-## ComponentPreview
+### ComponentPreview
 
 <ComponentPreview code={`
 <ComponentPreview code={\`
@@ -26,39 +26,36 @@ import ComponentPreview from '@components/mdx/ComponentPreview.astro';
 
 </ComponentPreview>
 
-## Since
+### StdVer
 
 <ComponentPreview code={`
-<Since v26>
- For std::filesystem::path, see path format specification.
-</Since>
+<StdVer since="26">
+ For path, see path format specification.
+</StdVer>
 `}>
-<Since v26>
-For std::filesystem::path, see path format specification.
-</Since>
+<StdVer since="26">
+For path, see path format specification.
+</StdVer>
 </ComponentPreview>
 
 <ComponentPreview code={`
-<Since v26 until>
- For std::filesystem::path, see path format specification.
-</Since>
+<StdVer until="11">
+ For path, see path format specification.
+</StdVer>
 `}>
-<Since v26 until>
-For std::filesystem::path, see path format specification.
-</Since>
+<StdVer until="11">
+For path, see path format specification.
+</StdVer>
 </ComponentPreview>
 
 <ComponentPreview code={`
-#### test <Since v26 until inline>this is a inline since</Since>
+#### For path, see <StdVer since="26" inline>path format specification</StdVer>
 `}>
-
-
-#### test <Since v26 until inline>this is a inline since</Since>
-
+#### For path, see <StdVer since="26" inline>path format specification</StdVer>
 </ComponentPreview>
 
 
-## DeclarationTable
+### DeclarationTable
 
 <ComponentPreview code={`
 <DeclarationTable header="print" content={\`
@@ -74,7 +71,7 @@ void println( std::FILE* stream,
 (3) (since C++26)
 void println();
 
-(S) (since C++26)
+(S) (constexpr since C++26)
 void println( std::FILE* stream );
 \`} />
 
@@ -92,7 +89,7 @@ void println( std::FILE* stream,
 (3) (since C++26)
 void println();
 
-(S) (since C++26)
+(S) (constexpr since C++26)
 void println( std::FILE* stream );
 `} />
 
