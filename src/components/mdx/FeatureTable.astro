@@ -1,7 +1,7 @@
 ---
 export type Props = {
     template?: "feature-test";
-}
+};
 
 const { template } = Astro.props;
 
@@ -18,7 +18,29 @@ function parseFeatureTestContent(content: string): FeatureTestRow[] {
     const lines = content
         .trim()
         .split("\n")
-        .filter((line) => line.trim());
+        .filter((line) => line.trim())
+        .map((v) => {
+            v = v.trim();
+            // Remove leading and trailing '|'
+            if (v.startsWith("<p>")) {
+                v = v.substring(3);
+            }
+
+            if (v.endsWith("</p>")) {
+                v = v.slice(0, -4);
+            }
+
+            if (v.startsWith("|")) {
+                v = v.substring(1);
+            }
+            if (v.endsWith("|")) {
+                v = v.slice(0, -1);
+            }
+
+            return v.trim();
+        });
+
+        console.log("Parsed lines:", lines);
 
     const rows: FeatureTestRow[] = [];
     let currentMacro = "";
@@ -29,9 +51,10 @@ function parseFeatureTestContent(content: string): FeatureTestRow[] {
 
         if (trimmedLine.startsWith("::")) {
             const parts = trimmedLine
-                .substring(3)
+                .substring(2)
                 .split("|")
-                .map((p) => p.trim());
+                .map((p) => p.trim())
+                .slice(1)
             if (parts.length >= 3) {
                 macroRows.push({
                     value: parts[0],
@@ -85,7 +108,7 @@ function getTableHeaders(template: string) {
     }
 }
 
-const rows = parseFeatureTestContent(await Astro.slots.render('default'));
+const rows = parseFeatureTestContent(await Astro.slots.render("default"));
 const headers = getTableHeaders(template || "feature-test");
 ---
 

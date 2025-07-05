@@ -24,7 +24,7 @@ const remarkHeadlessTable = function () {
             // | :---: | :---: |
             // | --- | --- |
             // | --- | ---: |
-            if (/^\|.*\|$/.test(firstLine) === false) return;
+            if (/^\|(?:\s*:?-{2,}:?\s*\|)+$/.test(firstLine) === false) return;
 
             let tableTextNew = '|';
 
