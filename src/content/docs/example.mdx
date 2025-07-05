@@ -48,34 +48,10 @@ For path, see path format specification.
 </StdVer>
 </ComponentPreview>
 
-<ComponentPreview code={`
 #### For path, see <StdVer since="26" inline>path format specification</StdVer>
-`}>
-#### For path, see <StdVer since="26" inline>path format specification</StdVer>
-</ComponentPreview>
-
 
 ### DeclarationTable
 
-<ComponentPreview code={`
-<DeclarationTable header="print" content={\`
-(1)
-template< class... Args >
-void println( std::format_string<Args...> fmt, Args&&... args );
-
-(666) (since C++23)
-template< class... Args >
-void println( std::FILE* stream,
-              std::format_string<Args...> fmt, Args&&... args );
-
-(3) (since C++26)
-void println();
-
-(S) (constexpr since C++26)
-void println( std::FILE* stream );
-\`} />
-
-`}>
 <DeclarationTable header="print" content={`
 (1)
 template< class... Args >
@@ -92,6 +68,3 @@ void println();
 (S) (constexpr since C++26)
 void println( std::FILE* stream );
 `} />
-
-</ComponentPreview>
-

@@ -3,6 +3,10 @@ import { defineConfig } from 'astro/config';
 import starlight from '@astrojs/starlight';
 import mdx from '@astrojs/mdx';
 import { fileURLToPath } from "node:url"
+import remarkGfm from 'remark-gfm';
+// @ts-ignore
+import remarkAttr from 'remark-attr';
+import remarkHeadlessTable from './remark-headless-tables.js';
 
 // https://astro.build/config
 export default defineConfig({
@@ -24,7 +28,9 @@ export default defineConfig({
 			]
 		}),
 		mdx({
-
+			remarkPlugins: [
+				remarkGfm, remarkHeadlessTable
+			]
 		})
 	],
 	markdown: {
