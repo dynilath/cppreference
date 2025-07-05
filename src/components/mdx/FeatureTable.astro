@@ -1,10 +1,9 @@
 ---
-export interface Props {
-    template: string;
-    content: string;
+export type Props = {
+    template?: "feature-test";
 }
 
-const { template, content } = Astro.props;
+const { template } = Astro.props;
 
 interface FeatureTestRow {
     macro: string;
@@ -88,8 +87,8 @@ function getTableHeaders(template: string) {
     }
 }
 
-const rows = parseFeatureTestContent(content);
-const headers = getTableHeaders(template);
+const rows = parseFeatureTestContent(await Astro.slots.render('default'));
+const headers = getTableHeaders(template || "feature-test");
 ---
 
 <div class="feature-test-table not-content">

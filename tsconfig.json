@@ -17,5 +17,8 @@
         "src/assets/*"
       ]
     }
+  },
+  "mdx": {
+    "checkMdx": true
   }
 }

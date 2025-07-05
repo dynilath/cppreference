@@ -11,14 +11,14 @@ import FeatureTable from '@components/mdx/FeatureTable.astro';
 
 ### FeatureTable
 
-<FeatureTable content={`
+<FeatureTable>
 __cpp_constexpr|200704L|C++11|constexpr
-::|201304L|C++14|Relaxed constexpr, non-const constexpr methods  
+::|201304L|C++14| <StdVer inline since="99">aaa</StdVer> constexpr, non-const constexpr methods  
 ::|201603L|C++17|<note>Constexpr</note> lambda
 ::|201907L|C++20|Trivial default initialization and asm-declaration in constexpr functions
 __cpp_constexpr_in_decltype|201711L|C++14 (DR)|Generation of function and variable definitions when needed for constant evaluation
 __cpp_constexpr_dynamic_alloc|201907L|C++20|Operations for dynamic storage duration in constexpr functions
-`} />
+</FeatureTable>
 
 
 ### StdVer
