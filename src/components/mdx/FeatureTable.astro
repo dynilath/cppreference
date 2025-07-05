@@ -1,0 +1,279 @@
+---
+export interface Props {
+    template: string;
+    content: string;
+}
+
+const { template, content } = Astro.props;
+
+interface FeatureTestRow {
+    macro: string;
+    value: string;
+    std: string;
+    feature: string;
+    isRowSpan?: boolean;
+    rowSpanCount?: number;
+}
+
+function parseFeatureTestContent(content: string): FeatureTestRow[] {
+    const lines = content
+        .trim()
+        .split("\n")
+        .filter((line) => line.trim());
+
+    const rows: FeatureTestRow[] = [];
+    let currentMacro = "";
+    let macroRows: Omit<FeatureTestRow, "macro">[] = [];
+
+    for (const line of lines) {
+        const trimmedLine = line.trim();
+
+        if (trimmedLine.startsWith("::")) {
+            const parts = trimmedLine
+                .substring(3)
+                .split("|")
+                .map((p) => p.trim());
+            if (parts.length >= 3) {
+                macroRows.push({
+                    value: parts[0],
+                    std: parts[1],
+                    feature: parts[2],
+                });
+            }
+        } else {
+            if (currentMacro && macroRows.length > 0) {
+                processCurrentMacro();
+            }
+
+            const parts = trimmedLine.split("|").map((p) => p.trim());
+            if (parts.length >= 4) {
+                currentMacro = parts[0];
+                macroRows = [
+                    {
+                        value: parts[1],
+                        std: parts[2],
+                        feature: parts[3],
+                    },
+                ];
+            }
+        }
+    }
+
+    if (currentMacro && macroRows.length > 0) {
+        processCurrentMacro();
+    }
+
+    function processCurrentMacro() {
+        macroRows.forEach((row, index) => {
+            rows.push({
+                macro: currentMacro,
+                value: row.value,
+                std: row.std,
+                feature: row.feature,
+                isRowSpan: index === 0,
+                rowSpanCount: macroRows.length,
+            });
+        });
+    }
+
+    return rows;
+}
+
+function getTableHeaders(template: string) {
+    switch (template) {
+        case "feature-test":
+            return ["Feature-test macro", "Value", "Std", "Feature"];
+        default:
+            return ["Feature-test macro", "Value", "Std", "Feature"];
+    }
+}
+
+const rows = parseFeatureTestContent(content);
+const headers = getTableHeaders(template);
+---
+
+<div class="feature-test-table not-content">
+    <table>
+        <thead>
+            <tr>
+                {headers.map((header) => <th>{header}</th>)}
+            </tr>
+        </thead>
+        <tbody>
+            {
+                rows.map((row) => (
+                    <tr>
+                        {row.isRowSpan && (
+                            <td class="macro-cell" rowspan={row.rowSpanCount}>
+                                <div
+                                    class="macro-content"
+                                    set:html={row.macro}
+                                />
+                            </td>
+                        )}
+                        <td class="value-cell">
+                            <span class="value-text">{row.value}</span>
+                        </td>
+                        <td class="std-cell">
+                            <span class="std-badge">{row.std}</span>
+                        </td>
+                        <td class="feature-cell" set:html={row.feature} />
+                    </tr>
+                ))
+            }
+        </tbody>
+    </table>
+</div>
+
+<style>
+    .feature-test-table {
+        border: 1px solid #e1e5e9;
+        border-radius: 6px;
+        margin: 1.5rem 0;
+        overflow: hidden;
+        background: white;
+    }
+
+    table {
+        width: 100%;
+        border-collapse: collapse;
+        font-size: 0.9rem;
+    }
+
+    th {
+        background: #f6f8fa;
+        padding: 0.75rem 1rem;
+        border-bottom: 2px solid #e1e5e9;
+        text-align: left;
+        font-weight: 600;
+        color: #24292f;
+        border-right: 1px solid #e1e5e9;
+    }
+
+    th:last-child {
+        border-right: none;
+    }
+
+    td {
+        padding: 0.75rem 1rem;
+        border-bottom: 1px solid #e1e5e9;
+        border-right: 1px solid #e1e5e9;
+        vertical-align: middle;
+    }
+
+    td:last-child {
+        border-right: none;
+    }
+
+    tbody tr:last-child td {
+        border-bottom: none;
+    }
+
+    .macro-cell {
+        background: #f6f8fa;
+        font-family: "SFMono-Regular", Consolas, "Liberation Mono", Menlo,
+            monospace;
+        border-right: 2px solid #e1e5e9;
+        position: relative;
+    }
+
+    .macro-content {
+        position: relative;
+    }
+
+    .light-code {
+        display: block;
+    }
+
+    .dark-code {
+        display: none;
+    }
+
+    .value-cell {
+        font-family: "SFMono-Regular", Consolas, "Liberation Mono", Menlo,
+            monospace;
+        white-space: nowrap;
+    }
+
+    .value-text {
+        color: #0969da;
+        font-weight: 500;
+    }
+
+    .std-cell {
+        white-space: nowrap;
+    }
+
+    .std-badge {
+        background: #dbeafe;
+        color: #1e40af;
+        padding: 0.25rem 0.5rem;
+        border-radius: 4px;
+        font-size: 0.8rem;
+        font-weight: 500;
+        white-space: nowrap;
+    }
+
+    .feature-cell {
+        line-height: 1.5;
+        color: #24292f;
+    }
+
+    :root[data-theme="dark"] .light-code {
+        display: none;
+    }
+
+    :root[data-theme="dark"] .dark-code {
+        display: block;
+    }
+
+    :root[data-theme="dark"] .feature-test-table {
+        border-color: #30363d;
+        background: #0d1117;
+    }
+
+    :root[data-theme="dark"] th {
+        background: #161b22;
+        border-color: #30363d;
+        color: #f0f6fc;
+    }
+
+    :root[data-theme="dark"] .macro-cell {
+        background: #161b22;
+        border-color: #30363d;
+    }
+
+    :root[data-theme="dark"] td {
+        border-color: #21262d;
+        color: #e6edf3;
+    }
+
+    :root[data-theme="dark"] .value-text {
+        color: #58a6ff;
+    }
+
+    :root[data-theme="dark"] .std-badge {
+        background: #1e3a8a;
+        color: #93c5fd;
+    }
+
+    :root[data-theme="dark"] .feature-cell {
+        color: #e6edf3;
+    }
+
+    @media (max-width: 768px) {
+        .feature-test-table {
+            font-size: 0.8rem;
+        }
+
+        th,
+        td {
+            padding: 0.5rem;
+        }
+
+        .std-badge {
+            font-size: 0.7rem;
+            padding: 0.2rem 0.4rem;
+        }
+    }
+</style>
