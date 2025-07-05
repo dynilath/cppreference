@@ -25,6 +25,9 @@ export default defineConfig({
 					label: 'C',
 					autogenerate: { directory: 'c' },
 				},
+			],
+			customCss: [
+				'./src/styles/custom.css',
 			]
 		}),
 		mdx({

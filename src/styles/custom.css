@@ -1,0 +1,17 @@
+:root {
+    --note-text-green: #008000;
+}
+
+:root[data-theme="dark"] {
+    --note-text-green: #009900;
+}
+
+
+th:empty {
+    padding: 0;
+}
+
+note {
+    color: var(--note-text-green);
+    font-size: .8rem;
+}

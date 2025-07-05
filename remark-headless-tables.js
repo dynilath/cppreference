@@ -3,18 +3,20 @@ import { toMarkdown } from 'mdast-util-to-markdown';
 import { fromMarkdown } from 'mdast-util-from-markdown';
 import { gfmTable } from 'micromark-extension-gfm-table';
 import { gfmTableFromMarkdown } from 'mdast-util-gfm-table';
+import { mdxFromMarkdown } from "mdast-util-mdx";
+import { mdxjs } from "micromark-extension-mdxjs";
 
-const remarkHeadlessTable = () => {
-    return (tree) => {
+const remarkHeadlessTable = function () {
+    return (tree, file) => {
         visit(tree, 'paragraph', (node, index, parent) => {
             if (!parent || typeof index !== 'number') return;
 
             const children = node.children;
             if (children.length === 0 || children[0].type !== 'text') return;
 
-            const textContent = toMarkdown(node)
-            
-            const firstLine = textContent.split('\n')[0];
+            const textContent = file.toString().slice(node.position.start.offset, node.position.end.offset);
+
+            const firstLine = textContent.split('\n')[0].trim();
 
             // we supports the following table format:
             // |---|---|
@@ -34,8 +36,8 @@ const remarkHeadlessTable = () => {
             tableTextNew += textContent;
 
             const table = fromMarkdown(tableTextNew, {
-                extensions: [gfmTable()],
-                mdastExtensions: [gfmTableFromMarkdown()],
+                extensions: [mdxjs(), gfmTable()],
+                mdastExtensions: [mdxFromMarkdown(), gfmTableFromMarkdown()],
             }).children[0];
 
             parent.children.splice(index, 1, table);

@@ -6,47 +6,17 @@ title: Examples
 
 import DeclarationTable from '@components/mdx/DeclarationTable.astro';
 import StdVer from '@components/mdx/StdVer.astro';
-import ComponentPreview from '@components/mdx/ComponentPreview.astro';
-
-### ComponentPreview
-
-<ComponentPreview code={`
-<ComponentPreview code={\`
-  <div>This will be rendered in the preview area</div>
-\`}>
-  <div>This will be rendered in the preview area</div>
-</ComponentPreview>
-`}>
-
-<ComponentPreview code={`
-  <div>This will be rendered in the preview area</div>
-`}>
-  <div>This will be rendered in the preview area</div>
-</ComponentPreview>
-
-</ComponentPreview>
+import SeeAlso from '@components/mdx/SeeAlso.astro';
 
 ### StdVer
 
-<ComponentPreview code={`
-<StdVer since="26">
- For path, see path format specification.
-</StdVer>
-`}>
 <StdVer since="26">
 For path, see path format specification.
 </StdVer>
-</ComponentPreview>
 
-<ComponentPreview code={`
-<StdVer until="11">
- For path, see path format specification.
-</StdVer>
-`}>
 <StdVer until="11">
 For path, see path format specification.
 </StdVer>
-</ComponentPreview>
 
 #### For path, see <StdVer since="26" inline>path format specification</StdVer>
 
@@ -68,3 +38,46 @@ void println();
 (S) (constexpr since C++26)
 void println( std::FILE* stream );
 `} />
+
+### SeeAlso
+
+<SeeAlso 
+  items={[
+    {
+      name: ["sin", "sinf <note>(C++11)</note>", "sinl <note>(C++11)</note>"],
+      description: "computes sine (<em>sin(x)</em>) <note>(function)</note>"
+    },
+    {
+      name: ["tan", "tanf <note>(C++11)</note>", "tanl <note>(C++11)</note>"],
+      description: "computes tangent (<em>tan(x)</em>) <note>(function)</note>"
+    },
+    {
+      name: ["acos", "acosf <note>(C++11)</note>", "acosl <note>(C++11)</note>"],
+      description: "computes arc cosine (<em>arccos(x)</em>) <note>(function)</note>"
+    },
+    {
+      name: "cos(std::complex)",
+      description: "computes cosine of a complex number (<code>cos(z)</code>) <note>(function template)</note>",
+    },
+    {
+      name: "cos(std::valarray)",
+      description: "applies the function <code>std::cos</code> to each element of valarray <note>(function template)</note>",
+    }
+  ]}
+/>
+
+
+
+### style elements
+
+# yyy <note>xxxnote</note>
+
+yyyy2 <note>xxxnote2</note>
+
+### special tables
+
+##### headless
+
+|---|---|
+| xx <b>aa</b> <StdVer inline until="11">For path, see path format specification.</StdVer> | yy |
+| aa | bb |

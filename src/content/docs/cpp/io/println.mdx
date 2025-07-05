@@ -7,7 +7,6 @@ import DeclarationTable from '@components/mdx/DeclarationTable.astro';
 import StdVer from '@components/mdx/StdVer.astro';
 import ComponentPreview from '@components/mdx/ComponentPreview.astro';
 
-
 <DeclarationTable header="print" content={`
 (1) (since C++23)
 template< class... Args >
@@ -40,20 +39,21 @@ If `std::formatter<Ti, char>` does not meet the [BasicFormatter](https://en.cppr
 
 ## Parameters
 
-- **`stream`** - output file stream to write to
-- **`fmt`** - an object that represents the format string. The format string consists of
-    - ordinary characters (except `{` and `}`), which are copied unchanged to the output,
-    - escape sequences `{{` and `}}`, which are replaced with `{` and `}` respectively in the output, and
-    - replacement fields.
+##### `stream`
 
-        Each replacement field has the following format:
+output file stream to write to
+##### `fmt`
+- an object that represents the format string. The format string consists of
+- ordinary characters (except `{` and `}`), which are copied unchanged to the output,
+- escape sequences `{{` and `}}`, which are replaced with `{` and `}` respectively in the output, and
+- replacement fields.
 
-        |---|---|
-        |**\{** arg-id (optional)**\}**               |(1)|
-        |**\{** arg-id (optional) : format-spec **\}** |(2)|
+Each replacement field has the following format:
+
+|**\{** `arg-id` <note>(optional)</note> **\}**               |(1)|
+|**\{** `arg-id` <note>(optional)</note> : `format-spec` **\}** |(2)|
 
 
-            1. replacement field without a format specification
-            2. replacement field with a format specification
-
-- **`arg-id`** - specifies the index of the argument in `args` whose value is to be used for formatting; if it is omitted, the arguments are used in order.
+    1. replacement field without a format specification
+    2. replacement field with a format specification
+        - **`arg-id`** - specifies the index of the argument in `args` whose value is to be used for formatting; if it is omitted, the arguments are used in order.
