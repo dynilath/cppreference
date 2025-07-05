@@ -38,8 +38,6 @@ const remarkHeadlessTable = () => {
                 mdastExtensions: [gfmTableFromMarkdown()],
             }).children[0];
 
-            console.log('Table detected:', table);
-
             parent.children.splice(index, 1, table);
         });
     };
