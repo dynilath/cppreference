@@ -2,24 +2,23 @@
 title: Examples
 ---
 
-## astro components of this project 
+## astro components of this project
 
-import DeclarationTable from '@components/mdx/DeclarationTable.astro';
-import StdVer from '@components/mdx/StdVer.astro';
-import SeeAlso from '@components/mdx/SeeAlso.astro';
-import FeatureTable from '@components/mdx/FeatureTable.astro';
+import DeclarationTable from '@components/mdx/DeclarationTable.astro';                            import
+StdVer from '@components/mdx/StdVer.astro';                            import SeeAlso from
+  '@components/mdx/SeeAlso.astro';                            import FeatureTable from
+  '@components/mdx/FeatureTable.astro';
 
 ### FeatureTable
 
 <FeatureTable>
-__cpp_constexpr|200704L|C++11|constexpr
-::|201304L|C++14| <StdVer inline since="99">aaa</StdVer> constexpr, non-const constexpr methods  
-::|201603L|C++17|<note>Constexpr</note> lambda
-::|201907L|C++20|Trivial default initialization and asm-declaration in constexpr functions
-__cpp_constexpr_in_decltype|201711L|C++14 (DR)|Generation of function and variable definitions when needed for constant evaluation
-__cpp_constexpr_dynamic_alloc|201907L|C++20|Operations for dynamic storage duration in constexpr functions
+| __cpp_constexpr                 | 200704L | C++11      | constexpr                                                                           |
+| ::                              | 201304L | C++14      | <StdVer inline since="99">aaa</StdVer> constexpr, non-const constexpr methods       |
+| ::                              | 201603L | C++17      | <note>Constexpr</note> lambda                                                       |
+| ::                              | 201907L | C++20      | Trivial default initialization and asm-declaration in constexpr functions           |
+| __cpp_constexpr_in_decltype     | 201711L | C++14 (DR) | Generation of function and variable definitions when needed for constant evaluation |
+| __cpp_constexpr_dynamic_alloc   | 201907L | C++20      | Operations for dynamic storage duration in constexpr functions                      |
 </FeatureTable>
-
 
 ### StdVer
 
@@ -35,55 +34,55 @@ For path, see path format specification.
 
 ### DeclarationTable
 
-<DeclarationTable header="print" content={`
-(1)
-template< class... Args >
-void println( std::format_string<Args...> fmt, Args&&... args );
+<DeclarationTable header="print" content={` (1) template< class... Args > void
+println( std::format_string<Args...> fmt, Args&&... args );
 
-(1) (since C++23)
-template< class... Args >
-void println( std::format_string<Args...> fmt, Args&&... args );
+(1) (since C++23) template< class... Args > void println(
+std::format_string<Args...> fmt, Args&&... args );
 
-(2) (since C++23)
-template< class... Args >
-void println( std::FILE* stream,
-              std::format_string<Args...> fmt, Args&&... args );
+(2) (since C++23) template< class... Args > void println( std::FILE* stream,
+std::format_string<Args...> fmt, Args&&... args );
 
-(3) (since C++26)
-void println();
+(3) (since C++26) void println();
 
-(S) (since C++23) (constexpr since C++26) 
-void println( std::FILE* stream );
-`} />
+(S) (since C++23) (constexpr since C++26) void println( std::FILE* stream ); `}
+/>
 
 ### SeeAlso
 
-<SeeAlso 
-  items={[
-    {
-      name: ["sin", "sinf <note>(C++11)</note>", "sinl <note>(C++11)</note>"],
-      description: "computes sine (<em>sin(x)</em>) <note>(function)</note>"
-    },
-    {
-      name: ["tan", "tanf <note>(C++11)</note>", "tanl <note>(C++11)</note>"],
-      description: "computes tangent (<em>tan(x)</em>) <note>(function)</note>"
-    },
-    {
-      name: ["acos", "acosf <note>(C++11)</note>", "acosl <note>(C++11)</note>"],
-      description: "computes arc cosine (<em>arccos(x)</em>) <note>(function)</note>"
-    },
-    {
-      name: "cos(std::complex)",
-      description: "computes cosine of a complex number (<code>cos(z)</code>) <note>(function template)</note>",
-    },
-    {
-      name: "cos(std::valarray)",
-      description: "applies the function <code>std::cos</code> to each element of valarray <note>(function template)</note>",
-    }
-  ]}
-/>
-
-
+<SeeAlso items={
+[{
+    name: [
+      "sin",
+      "sinf <note>(C++11)</note>",
+      "sinl<note>(C++11)</note>"
+    ],
+    description: "computes sine (<em>sin(x)</em>)<note>(function)</note>"
+  },
+  {
+    name: [
+      "tan",
+      "tanf <note>(C++11)</note>",
+      "tanl<note>(C++11)</note>"
+    ],
+    description: "computes tangent (<em>tan(x)</em>)<note>(function)</note>"
+  },
+  {
+    name: [
+      "acos",
+      "acosf <note>(C++11)</note>",
+      "acosl <note>(C++11)</note>"
+    ],
+    description: "computes arc cosine(<em>arccos(x)</em>) <note>(function)</note>"
+  },
+  {
+    name: "cos(std::complex)", description: "computes cosine of a complex number (<code>cos(z)</code>)<note>(function template)</note>",
+  },
+  {
+    name: "cos(std::valarray)", description: "applies the function <code>std::cos</code> to each element of valarray<note>(function template)</note>",
+  }
+]
+} />
 
 ### style elements
 
@@ -95,6 +94,6 @@ yyyy2 <note>xxxnote2</note>
 
 ##### headless
 
-|---|---|
+|---|---| 
 | xx <b>aa</b> <StdVer inline until="11">For path, see path format specification.</StdVer> | yy |
 | aa | bb |

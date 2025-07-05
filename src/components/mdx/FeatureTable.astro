@@ -80,8 +80,6 @@ function parseFeatureTestContent(content: string): FeatureTestRow[] {
 
 function getTableHeaders(template: string) {
     switch (template) {
-        case "feature-test":
-            return ["Feature-test macro", "Value", "Std", "Feature"];
         default:
             return ["Feature-test macro", "Value", "Std", "Feature"];
     }
