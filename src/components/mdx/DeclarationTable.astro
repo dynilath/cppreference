@@ -8,39 +8,61 @@ export interface Props {
 
 const { header, content } = Astro.props;
 
+interface SinceInfo {
+  type: "since" | "constexpr";
+  version: string;
+}
+
+interface Declaration {
+  number: string;
+  code: string;
+  since: SinceInfo[];
+}
+
 function parseDeclarations(content: string) {
   const lines = content
     .trim()
     .split("\n")
     .filter((line) => line.trim());
-  const declarations: Array<{
-    number: string;
-    code: string;
-    version?: string;
-  }> = [];
+  const declarations: Declaration[] = [];
 
   let currentDeclaration = "";
   let currentNumber = "";
-  let currentVersion = "";
+  let currentSince: SinceInfo[] = [];
   let inDeclaration = false;
 
   for (const line of lines) {
     const trimmedLine = line.trim();
 
-    const numberMatch = trimmedLine.match(/^\((\S+)\)(?:\s+\((.+?)\))?$/);
+    const numberMatch = trimmedLine.match(/^\((\S+)\)(.*)$/);
     if (numberMatch) {
       if (currentDeclaration && currentNumber) {
         declarations.push({
           number: currentNumber,
           code: currentDeclaration.trim(),
-          version: currentVersion,
+          since: currentSince,
         });
       }
 
       currentNumber = numberMatch[1];
-      currentVersion = numberMatch[2] || "";
       currentDeclaration = "";
+      currentSince = [];
       inDeclaration = true;
+
+      const sinceText = numberMatch[2];
+      const sinceMatches = sinceText.matchAll(
+        /\((?:(constexpr\s+)?since\s+(.+?))\)/g,
+      );
+
+      for (const match of sinceMatches) {
+        const isConstexpr = !!match[1];
+        const version = match[2];
+        currentSince.push({
+          type: isConstexpr ? "constexpr" : "since",
+          version: version,
+        });
+      }
+
       continue;
     }
 
@@ -57,32 +79,58 @@ function parseDeclarations(content: string) {
     declarations.push({
       number: currentNumber,
       code: currentDeclaration.trim(),
-      version: currentVersion,
+      since: currentSince,
     });
   }
 
   return declarations;
 }
 
-const declarations = parseDeclarations(content);
+function groupDeclarations(declarations: Declaration[]) {
+  const grouped: { [key: string]: Declaration[] } = {};
 
-const highlightedDeclarations = await Promise.all(
-  declarations.map(async (decl) => {
-    const [lightHighlighted, darkHighlighted] = await Promise.all([
-      codeToHtml(decl.code, {
-        lang: "cpp",
-        theme: "github-light",
+  for (const decl of declarations) {
+    if (!grouped[decl.number]) {
+      grouped[decl.number] = [];
+    }
+    grouped[decl.number].push(decl);
+  }
+
+  return Object.entries(grouped).map(([number, decls]) => ({
+    number,
+    declarations: decls,
+  }));
+}
+
+const declarations = parseDeclarations(content);
+const groupedDeclarations = groupDeclarations(declarations);
+
+const highlightedGroups = await Promise.all(
+  groupedDeclarations.map(async (group) => {
+    const highlightedDeclarations = await Promise.all(
+      group.declarations.map(async (decl) => {
+        const [lightHighlighted, darkHighlighted] = await Promise.all([
+          codeToHtml(decl.code, {
+            lang: "cpp",
+            theme: "github-light",
+          }),
+          codeToHtml(decl.code, {
+            lang: "cpp",
+            theme: "github-dark",
+          }),
+        ]);
+
+        return {
+          ...decl,
+          lightHighlighted,
+          darkHighlighted,
+        };
       }),
-      codeToHtml(decl.code, {
-        lang: "cpp",
-        theme: "github-dark",
-      }),
-    ]);
+    );
 
     return {
-      ...decl,
-      lightHighlighted,
-      darkHighlighted,
+      number: group.number,
+      declarations: highlightedDeclarations,
     };
   }),
 );
@@ -95,19 +143,33 @@ const highlightedDeclarations = await Promise.all(
 
   <div class="declarations-container">
     {
-      highlightedDeclarations.map((decl) => (
-        <div class="declaration-row">
-          <div class="declaration-content-wrapper">
-            <div class="declaration-content">
-              <div class="light-code" set:html={decl.lightHighlighted} />
-              <div class="dark-code" set:html={decl.darkHighlighted} />
+      highlightedGroups.map((group) => (
+        <div class="declaration-group">
+          <div class="declaration-row">
+            <div class="declaration-content-wrapper">
+              {group.declarations.map((decl, index) => (
+                <div class="declaration-content">
+                  <div class="declaration-code-wrapper">
+                    <div class="light-code" set:html={decl.lightHighlighted} />
+                    <div class="dark-code" set:html={decl.darkHighlighted} />
+                  </div>
+                  {decl.since.length > 0 && (
+                    <div class="since-info">
+                      {decl.since.map((since) => (
+                        <span class={`since-tag ${since.type}`}>
+                          {since.type === "constexpr"
+                            ? `constexpr since ${since.version}`
+                            : `since ${since.version}`}
+                        </span>
+                      ))}
+                    </div>
+                  )}
+                </div>
+              ))}
             </div>
-          </div>
-          <div class="declaration-meta">
-            {decl.version && (
-              <span class="declaration-version">({decl.version})</span>
-            )}
-            <span class="declaration-number">({decl.number})</span>
+            <div class="declaration-meta">
+              <span class="declaration-number">({group.number})</span>
+            </div>
           </div>
         </div>
       ))
@@ -141,43 +203,87 @@ const highlightedDeclarations = await Promise.all(
     background: white;
   }
 
+  .declaration-group:not(:last-child) {
+    border-bottom: 1px solid #e1e5e9;
+  }
+
   .declaration-row {
     display: flex;
     align-items: flex-start;
-    border-bottom: 1px solid #e1e5e9;
     padding: 1rem;
     gap: 1rem;
     align-items: center;
-  }
-
-  .declaration-row:last-child {
-    border-bottom: none;
   }
 
   .declaration-content-wrapper {
     flex: 1;
     min-width: 0;
     position: relative;
+    display: flex;
+    flex-direction: column;
   }
 
   .declaration-content {
-    overflow-x: auto;
-    overflow-y: hidden;
-    position: relative;
-    scrollbar-width: none;
-    -ms-overflow-style: none;
-    mask: linear-gradient(to right, 
-      black 0%, 
-      black calc(100% - 20px), 
-      transparent 100%);
-    -webkit-mask: linear-gradient(to right, 
-      black 0%, 
-      black calc(100% - 20px), 
-      transparent 100%);
+    display: flex;
+    flex-direction: row;
+    padding: 0.5rem;
+    align-items: center;
+    justify-content: space-between;
+
+    &:not(:last-child) {
+      border-bottom: 1px solid var(--border-color);
+    }
+
+    .declaration-code-wrapper {
+      flex: 1;
+      overflow-x: auto;
+      overflow-y: hidden;
+      position: relative;
+      scrollbar-width: none;
+      -ms-overflow-style: none;
+      mask: linear-gradient(
+        to right,
+        black 0%,
+        black calc(100% - 20px),
+        transparent 100%
+      );
+      -webkit-mask: linear-gradient(
+        to right,
+        black 0%,
+        black calc(100% - 20px),
+        transparent 100%
+      );
+    }
   }
 
   .declaration-content::-webkit-scrollbar {
     display: none;
+  }
+
+  .since-info {
+    display: flex;
+    gap: 0.5rem;
+    flex-wrap: wrap;
+    flex-direction: column;
+    align-items: flex-end;
+  }
+
+  .since-tag {
+    font-size: 0.75rem;
+    padding: 0.15rem 0.5rem;
+    border-radius: 12px;
+    white-space: nowrap;
+    font-weight: 500;
+  }
+
+  .since-tag.since {
+    color: #1a7f37;
+    background: #dafbe1;
+  }
+
+  .since-tag.constexpr {
+    color: #8250df;
+    background: #fbefff;
   }
 
   .declaration-meta {
@@ -192,15 +298,6 @@ const highlightedDeclarations = await Promise.all(
     font-size: 0.9rem;
     color: #656d76;
     font-weight: 500;
-  }
-
-  .declaration-version {
-    font-size: 0.85rem;
-    color: #1a7f37;
-    background: #dafbe1;
-    padding: 0.15rem 0.5rem;
-    border-radius: 12px;
-    white-space: nowrap;
   }
 
   .light-code {
@@ -263,7 +360,7 @@ const highlightedDeclarations = await Promise.all(
     background: #0d1117;
   }
 
-  :root[data-theme="dark"] .declaration-row {
+  :root[data-theme="dark"] .declaration-group:not(:last-child) {
     border-color: #21262d;
   }
 
@@ -271,9 +368,14 @@ const highlightedDeclarations = await Promise.all(
     color: #8b949e;
   }
 
-  :root[data-theme="dark"] .declaration-version {
+  :root[data-theme="dark"] .since-tag.since {
     color: #238636;
     background: #1a2e1a;
+  }
+
+  :root[data-theme="dark"] .since-tag.constexpr {
+    color: #a5a3ff;
+    background: #2d1b3d;
   }
 
   @media (max-width: 768px) {
@@ -285,10 +387,6 @@ const highlightedDeclarations = await Promise.all(
     .declaration-meta {
       align-items: center;
       align-self: flex-start;
-    }
-
-    .declaration-version {
-      margin-left: 0.5rem;
     }
 
     .declaration-content-wrapper {

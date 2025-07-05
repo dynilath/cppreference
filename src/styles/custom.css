@@ -1,9 +1,11 @@
 :root {
     --note-text-green: #008000;
+    --border-color: #e1e5e9;
 }
 
 :root[data-theme="dark"] {
     --note-text-green: #009900;
+    --border-color: #30363d;
 }
 
 

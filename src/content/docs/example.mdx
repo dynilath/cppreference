@@ -27,7 +27,11 @@ For path, see path format specification.
 template< class... Args >
 void println( std::format_string<Args...> fmt, Args&&... args );
 
-(666) (since C++23)
+(1) (since C++23)
+template< class... Args >
+void println( std::format_string<Args...> fmt, Args&&... args );
+
+(2) (since C++23)
 template< class... Args >
 void println( std::FILE* stream,
               std::format_string<Args...> fmt, Args&&... args );
@@ -35,7 +39,7 @@ void println( std::FILE* stream,
 (3) (since C++26)
 void println();
 
-(S) (constexpr since C++26)
+(S) (since C++23) (constexpr since C++26) 
 void println( std::FILE* stream );
 `} />
 
