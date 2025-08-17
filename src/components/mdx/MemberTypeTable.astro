@@ -1,0 +1,43 @@
+<div class="member-type-table not-content">
+  <div class="member-type-table-container">
+    <slot />
+  </div>
+</div>
+
+<style>
+  .member-type-table {
+    border: 1px solid #e1e5e9;
+    border-radius: 6px;
+    margin: 1rem 0;
+    overflow: hidden;
+    background: white;
+    font-size: 0.9rem;
+  }
+
+  .member-type-table-container {
+    background: white;
+    display: table;
+    width: 100%;
+  }
+
+  :root[data-theme="dark"] .member-type-table {
+    border-color: #30363d;
+    background: #0d1117;
+  }
+
+  :root[data-theme="dark"] .member-type-table-container {
+    background: #0d1117;
+  }
+
+  @media (max-width: 768px) {
+    .member-type-table-container {
+      display: block;
+    }
+  }
+
+  @media (max-width: 480px) {
+    .member-type-table {
+      font-size: 0.85rem;
+    }
+  }
+</style>

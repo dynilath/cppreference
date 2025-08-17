@@ -1,0 +1,56 @@
+<div class="parameter-table-container">
+    <table class="parameter-table">
+        <tbody>
+            <slot />
+        </tbody>
+    </table>
+</div>
+
+<style>
+    .parameter-table-container {
+        margin: 16px 0;
+        overflow-x: auto;
+    }
+
+    .parameter-table {
+        width: 100%;
+        border-collapse: collapse;
+        border: 1px solid var(--border-color, #e1e5e9);
+        border-radius: 6px;
+        overflow: hidden;
+        font-size: 0.95em;
+    }
+
+    .parameter-table th {
+        background-color: #f8f9fa;
+        padding: 12px 16px;
+        text-align: left;
+        font-weight: 600;
+        border-bottom: 1px solid var(--border-color, #e1e5e9);
+        color: #374151;
+    }
+
+    .parameter-table td {
+        padding: 12px 16px;
+        border-bottom: 1px solid var(--border-color, #e1e5e9);
+        vertical-align: top;
+    }
+
+    .parameter-table tr:last-child td {
+        border-bottom: none;
+    }
+
+    .parameter-table tbody tr:hover {
+        background-color: #f9fafb;
+    }
+
+    /* Dark theme support */
+    :root[data-theme="dark"] .parameter-table th {
+        background-color: #1f2937;
+        color: #e5e7eb;
+    }
+
+    :root[data-theme="dark"] .parameter-table tbody tr:hover {
+        background-color: #374151;
+    }
+</style>

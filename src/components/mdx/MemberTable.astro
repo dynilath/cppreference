@@ -1,0 +1,47 @@
+---
+// MemberTable 现在只是一个容器，使用 MemberRow 来填充内容
+---
+
+<div class="member-table not-content">
+  <div class="member-table-container">
+    <slot />
+  </div>
+</div>
+
+<style>
+  .member-table {
+    border: 1px solid #e1e5e9;
+    border-radius: 6px;
+    margin: 1rem 0;
+    overflow: hidden;
+    background: white;
+    font-size: 0.9rem;
+  }
+
+  .member-table-container {
+    background: white;
+    display: table;
+    width: 100%;
+  }
+
+  :root[data-theme="dark"] .member-table {
+    border-color: #30363d;
+    background: #0d1117;
+  }
+
+  :root[data-theme="dark"] .member-table-container {
+    background: #0d1117;
+  }
+  
+  @media (max-width: 768px) {
+    .member-table-container {
+      display: block;
+    }
+  }
+
+  @media (max-width: 480px) {
+    .member-table {
+      font-size: 0.85rem;
+    }
+  }
+</style>

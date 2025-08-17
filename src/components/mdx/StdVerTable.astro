@@ -1,0 +1,84 @@
+---
+// StdVerTable 组件用于显示 C++ 标准版本表格
+// 使用 StdVerRow 组件来定义每一行
+---
+
+<div class="stdver-table-container">
+    <table class="stdver-table">
+        <tbody>
+            <slot />
+        </tbody>
+    </table>
+</div>
+
+<style>
+    .stdver-table-container {
+        margin: 16px 0;
+        overflow-x: auto;
+    }
+
+    .stdver-table-title {
+        font-size: 1.1em;
+        font-weight: 600;
+        color: #374151;
+        margin-bottom: 8px;
+        padding-left: 2px;
+    }
+
+    .stdver-table {
+        width: 100%;
+        border-collapse: collapse;
+        border: 1px solid var(--border-color, #e1e5e9);
+        border-radius: 6px;
+        overflow: hidden;
+        font-size: 0.95em;
+        background-color: #ffffff;
+    }
+
+    .stdver-table td {
+        padding: 12px 16px;
+        border-bottom: 1px solid var(--border-color, #e1e5e9);
+        vertical-align: top;
+    }
+
+    .stdver-table tr:last-child td {
+        border-bottom: none;
+    }
+
+    .stdver-table tbody tr:hover {
+        background-color: #f9fafb;
+    }
+
+    /* Dark theme support */
+    :root[data-theme="dark"] .stdver-table-title {
+        color: #e5e7eb;
+    }
+
+    :root[data-theme="dark"] .stdver-table {
+        background-color: #111827;
+        border-color: #374151;
+    }
+
+    :root[data-theme="dark"] .stdver-table td {
+        border-bottom-color: #374151;
+    }
+
+    :root[data-theme="dark"] .stdver-table tbody tr:hover {
+        background-color: #1f2937;
+    }
+
+    /* Responsive design */
+    @media (max-width: 768px) {
+        .stdver-table-container {
+            margin: 12px 0;
+        }
+        
+        .stdver-table {
+            font-size: 0.9em;
+        }
+        
+        .stdver-table td {
+            padding: 10px 12px;
+        }
+    }
+</style>

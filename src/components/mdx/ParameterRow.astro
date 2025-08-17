@@ -1,0 +1,71 @@
+---
+// 这个组件允许通过slot来传递复杂的HTML内容作为参数描述
+export interface Props {
+    paramName: string;
+}
+
+const { paramName } = Astro.props;
+---
+<tr class="parameter-row">
+    <td class="parameter-name">
+        <p>{paramName}</p>
+    </td>
+    <td class="parameter-description">
+        <slot />
+    </td>
+</tr>
+
+<style>
+    .parameter-row td {
+        padding: 12px 16px;
+        border-bottom: 1px solid var(--border-color, #e1e5e9);
+        vertical-align: top;
+    }
+
+    .parameter-row:last-child td {
+        border-bottom: none;
+    }
+
+    .parameter-name {
+        font-weight: 500;
+        white-space: nowrap;
+        width: 1%;
+        min-width: 120px;
+    }
+
+    .parameter-name code {
+        background-color: #f1f5f9;
+        padding: 4px 8px;
+        border-radius: 4px;
+        font-family: 'JetBrains Mono', 'Monaco', 'Consolas', 'Courier New', monospace;
+        color: #1f2937;
+        border: 1px solid #e5e7eb;
+    }
+
+    .parameter-description {
+        line-height: 1.6;
+    }
+
+    .parameter-description :global(.since-container) {
+        margin: 8px 0;
+        display: inline-block;
+    }
+
+    .parameter-description :global(code) {
+        background-color: #f1f5f9;
+        padding: 2px 4px;
+        border-radius: 3px;
+        font-family: 'JetBrains Mono', 'Monaco', 'Consolas', 'Courier New', monospace;
+    }
+
+    :root[data-theme="dark"] .parameter-name code {
+        background-color: #374151;
+        color: #e5e7eb;
+        border-color: #4b5563;
+    }
+
+    :root[data-theme="dark"] .parameter-description :global(code) {
+        background-color: #374151;
+        color: #e5e7eb;
+    }
+</style>

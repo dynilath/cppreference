@@ -1,0 +1,217 @@
+---
+export interface Props {
+  names: string | string[] | Array<{name: string; version?: string; removed?: string; href?: string}>;
+  category?: string;
+  version?: string;
+  removed?: string;
+}
+
+const { names, category, version, removed } = Astro.props;
+---
+
+<div class="member-row">
+  <div class="member-names">
+    <div class="member-names-content">
+      {Array.isArray(names) ? (
+        names.map((nameItem) => {
+          // 处理三种情况：字符串、对象
+          const name = typeof nameItem === 'string' ? nameItem : nameItem.name;
+          const itemVersion = typeof nameItem === 'string' ? version : (nameItem.version || version);
+          const itemRemoved = typeof nameItem === 'string' ? removed : (nameItem.removed || removed);
+          const href = typeof nameItem === 'string' ? `#${nameItem}` : (nameItem.href || `#${nameItem.name}`);
+          
+          return (
+            <div class="member-item">
+              <a href={href} class="member-link" set:html={name}></a>
+              {itemVersion && (
+                <span class="version-tag since">
+                  <span class="version-text">(C++{itemVersion})</span>
+                </span>
+              )}
+              {itemRemoved && (
+                <span class="version-tag removed">
+                  <span class="version-text">(removed in C++{itemRemoved})</span>
+                </span>
+              )}
+            </div>
+          );
+        })
+      ) : (
+        <div class="member-item">
+          <a href={`#${names}`} class="member-link" set:html={names}></a>
+          {version && (
+            <span class="version-tag since">
+              <span class="version-text">(C++{version})</span>
+            </span>
+          )}
+          {removed && (
+            <span class="version-tag removed">
+              <span class="version-text">(removed in C++{removed})</span>
+            </span>
+          )}
+        </div>
+      )}
+    </div>
+  </div>
+  
+  <div class="member-description">
+    <span class="description-text"><slot /></span>
+    {category && (
+      <div class="category-info">
+        <span class="category-text">({category})</span>
+      </div>
+    )}
+  </div>
+</div>
+
+<style>
+  .member-row {
+    display: table-row;
+    border-bottom: 1px solid #f6f8fa;
+  }
+
+  .member-row:last-child {
+    border-bottom: none;
+  }
+
+  .member-row:hover {
+    background: #f9fafb;
+  }
+
+  .member-names,
+  .member-description {
+    display: table-cell;
+    padding: 0.75rem 1rem;
+    vertical-align: middle;
+  }
+
+  .member-names {
+    width: 1%;
+    border-right: 1px solid #f6f8fa;
+  }
+
+  .member-names-content {
+    display: flex;
+    flex-direction: column;
+    gap: 0.25rem;
+  }
+
+  .member-item {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    line-height: 1.4;
+    flex-wrap: nowrap;
+    white-space: nowrap;
+  }
+
+  .member-link {
+    color: #0969da;
+    text-decoration: none;
+    font-family: "SFMono-Regular", Consolas, "Liberation Mono", Menlo, monospace;
+  }
+
+  .member-link:hover {
+    text-decoration: underline;
+  }
+
+  .version-tag {
+    display: inline-flex;
+    align-items: center;
+    margin-left: 0.25rem;
+  }
+
+  .version-tag.since .version-text {
+    color: #059669;
+  }
+
+  .version-tag.removed .version-text {
+    color: #cf222e;
+  }
+
+  .version-text {
+    color: #656d76;
+    font-style: italic;
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  }
+
+  .member-description {
+    width: auto;
+    color: #24292f;
+  }
+
+  .category-info {
+    margin-top: 0.25rem;
+  }
+
+  .category-text {
+    color: #059669;
+    font-style: italic;
+  }
+
+  :root[data-theme="dark"] .member-row {
+    border-color: #21262d;
+  }
+
+  :root[data-theme="dark"] .member-row:hover {
+    background: #161b22;
+  }
+
+  :root[data-theme="dark"] .member-names {
+    border-color: #21262d;
+  }
+
+  :root[data-theme="dark"] .member-link {
+    color: #58a6ff;
+  }
+
+  :root[data-theme="dark"] .version-text {
+    color: #8b949e;
+  }
+
+  :root[data-theme="dark"] .version-tag.since .version-text {
+    color: #58a6ff;
+  }
+
+  :root[data-theme="dark"] .version-tag.removed .version-text {
+    color: #f85149;
+  }
+
+  :root[data-theme="dark"] .member-description {
+    color: #e6edf3;
+  }
+
+  :root[data-theme="dark"] .category-text {
+    color: #8b949e;
+  }
+
+  @media (max-width: 768px) {
+    .member-row {
+      display: block;
+      border-bottom: 1px solid #f6f8fa;
+      padding: 0.75rem 1rem;
+    }
+
+    .member-names,
+    .member-description {
+      display: block;
+      width: auto;
+      padding: 0;
+      border-right: none;
+    }
+
+    .member-names {
+      margin-bottom: 0.5rem;
+    }
+
+    .member-item {
+      justify-content: space-between;
+      flex-wrap: wrap;
+      white-space: normal;
+    }
+
+    .version-tag {
+      margin-left: auto;
+    }
+  }
+</style>

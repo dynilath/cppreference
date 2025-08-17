@@ -1,0 +1,99 @@
+---
+export interface Props {
+  type: string;
+}
+
+const { type } = Astro.props;
+---
+
+<div class="member-type-row">
+  <div class="member-type-name">
+    <span class="type-name" set:html={type}></span>
+  </div>
+  
+  <div class="member-type-definition">
+    <slot />
+  </div>
+</div>
+
+<style>
+  .member-type-row {
+    display: table-row;
+    border-bottom: 1px solid #f6f8fa;
+  }
+
+  .member-type-row:last-child {
+    border-bottom: none;
+  }
+
+  .member-type-row:hover {
+    background: #f9fafb;
+  }
+
+  .member-type-name,
+  .member-type-definition {
+    display: table-cell;
+    padding: 0.75rem 1rem;
+    vertical-align: middle;
+  }
+
+  .member-type-name {
+    width: 1%;
+    border-right: 1px solid #f6f8fa;
+    font-family: "SFMono-Regular", Consolas, "Liberation Mono", Menlo, monospace;
+    font-weight: 500;
+  }
+
+  .type-name {
+    color: #24292f;
+    font-size: 0.85rem;
+  }
+
+  .member-type-definition {
+    width: auto;
+    color: #24292f;
+    font-size: 0.85rem;
+    line-height: 1.5;
+  }
+
+  :root[data-theme="dark"] .member-type-row {
+    border-color: #21262d;
+  }
+
+  :root[data-theme="dark"] .member-type-row:hover {
+    background: #161b22;
+  }
+
+  :root[data-theme="dark"] .member-type-name {
+    border-color: #21262d;
+  }
+
+  :root[data-theme="dark"] .type-name {
+    color: #e6edf3;
+  }
+
+  :root[data-theme="dark"] .member-type-definition {
+    color: #e6edf3;
+  }
+
+  @media (max-width: 768px) {
+    .member-type-row {
+      display: block;
+      border-bottom: 1px solid #f6f8fa;
+      padding: 0.75rem 1rem;
+    }
+
+    .member-type-name,
+    .member-type-definition {
+      display: block;
+      width: auto;
+      padding: 0;
+      border-right: none;
+    }
+
+    .member-type-name {
+      margin-bottom: 0.5rem;
+      font-weight: 600;
+    }
+  }
+</style>
